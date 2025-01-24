@@ -372,7 +372,7 @@
                   <div class="option-group" style="margin-top:5px;">
                     <label><input type="radio" name="observacaoVisual" value="NENHUMA ALTERAÇÃO" /> NENHUMA ALTERAÇÃO</label>
                     <label><input type="radio" name="observacaoVisual" value="LESÕES VISÍVEIS" /> LESÕES VISÍVEIS</label>
-                    <button type="button" id="clearCanvasBtn" style="margin-top: 10px;">Limpar Desenho</button>
+                    <button type="button" id="clearCanvasBtn" style="margin-top: 10px;">Limpar Lesões</button>
                   </div>
                 </div>
                 <canvas id="animalCanvas" width="300" height="300"></canvas>
@@ -486,7 +486,7 @@
     const clearCanvasBtn = document.getElementById("clearCanvasBtn");
 
     function clearCanvas() {
-      if (confirm("Você tem certeza que deseja limpar o desenho?")) {
+      if (confirm("Você tem certeza que deseja apagar os locais das lesões?")) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(animalImage, 0, 0, canvas.width, canvas.height);
         initialCanvasData = canvas.toDataURL();
@@ -583,7 +583,7 @@
           errors.push("Descreva a lesão na pergunta: Descrição Clínica da Lesão.")
         }
         if (canvas.toDataURL() === initialCanvasData) {
-          errors.push("Indique na figura o local da lesão visível (desenhe algo no canvas).")
+          errors.push("Indique na figura o local da lesão visível.")
         }
       }
       if (errors.length > 0) {
