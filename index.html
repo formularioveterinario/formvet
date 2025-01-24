@@ -91,7 +91,7 @@
       font-weight: bold;
       text-transform: uppercase;
       border: none;
-      background-color: #007BFF; /* Cor original dos botões */
+      background-color: #007BFF;
       color: white;
       border-radius: 5px;
       transition: background-color 0.3s;
@@ -141,10 +141,9 @@
       font-weight: normal;
     }
     .option-group label {
-      display: block;
-      margin-bottom: 5px;
+      display: inline-block;
+      margin-right: 10px;
     }
-    /* Estilo para o botão de limpar o canvas */
     #clearCanvasBtn {
       padding: 5px 10px;
       font-size: 0.9em;
@@ -152,24 +151,22 @@
       font-weight: bold;
       text-transform: uppercase;
       border: none;
-      background-color: #dc3545; /* Cor vermelha para destaque */
+      background-color: #dc3545;
       color: white;
       border-radius: 5px;
       transition: background-color 0.3s;
-      margin-left: 10px;
+      margin-top: 10px;
     }
     #clearCanvasBtn:hover {
       background-color: #c82333;
     }
     @media (max-width: 1024px) {
-      /* Ajustes para tablets */
       .row-flex div {
         flex: 1 1 45%;
         min-width: 200px;
       }
     }
     @media (max-width: 768px) {
-      /* Ajustes para celulares */
       h1 {
         font-size: 1.3em;
       }
@@ -195,8 +192,12 @@
         align-items: stretch;
       }
       .same-line {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .option-group label {
+        display: inline-block;
+        margin-right: 10px;
       }
     }
     @media print {
@@ -668,10 +669,13 @@
         filename:     nomeArquivo + '.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all'] }
       };
-      html2pdf().set(opt).from(element).save();
-      resetForm();
+      html2pdf().set(opt).from(element).save().then(() => {
+        document.getElementById("clearCanvasBtn").style.display = "none";
+        resetForm();
+      });
     });
     document.getElementById("newFormBtn").addEventListener("click", function(){
       const confirmNew = confirm("Você deseja iniciar um novo atendimento e excluir todos os dados sem salvar?");
@@ -685,6 +689,7 @@
       initialCanvasData = canvas.toDataURL();
       document.getElementById("protocoloAtendimento").textContent = "";
       document.getElementById("signatureLine").innerHTML = "";
+      document.getElementById("clearCanvasBtn").style.display = "block";
     }
   </script>
 </body>
