@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ficha de Atendimento Veterinário</title>
   <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.3/dist/html2pdf.bundle.min.js"></script>
   <style>
@@ -10,19 +9,17 @@
       font-family: Arial, sans-serif;
       margin: 20px;
       text-align: center;
-      padding: 0 10px;
     }
     h1 {
       text-align: center;
       margin-bottom: 10px;
       font-weight: bold;
-      font-size: 1.5em;
     }
     .header-image {
       display: block;
       margin: 0 auto 15px auto;
-      max-width: 100%;
-      height: auto;
+      max-width: 600px;
+      width: 100%;
     }
     #printTable {
       margin: 0 auto;
@@ -54,7 +51,7 @@
       text-decoration: none;
       margin-top: 10px;
       display: block;
-      text-align: left;
+      text-align: center;
     }
     .avoid-break {
       page-break-inside: avoid;
@@ -65,11 +62,11 @@
     input[type="time"],
     textarea {
       width: 100%;
-      padding: 10px;
+      padding: 5px;
       margin-top: 5px;
       box-sizing: border-box;
       font-family: inherit;
-      font-size: 1em;
+      font-size: 14px;
       text-transform: uppercase;
       text-align: center;
     }
@@ -79,13 +76,12 @@
     }
     button {
       display: inline-block;
-      margin: 10px 5px;
-      padding: 12px 20px;
+      margin: 0 10px;
+      padding: 10px 20px;
       font-size: 1em;
       cursor: pointer;
       font-weight: bold;
       text-transform: uppercase;
-      width: 45%;
     }
     .signature-line {
       margin-top: 40px;
@@ -101,21 +97,19 @@
       display: block;
       margin: 10px auto;
       cursor: crosshair;
-      width: 100%;
-      height: auto;
-      max-width: 300px;
+      max-width: 100%;
     }
     .row-flex {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       gap: 20px;
       margin-top: 10px;
     }
     .row-flex div {
-      flex: 1 1 100%;
-      min-width: 200px;
+      flex: 1;
+      min-width: 130px;
     }
     .same-line {
       display: inline-flex;
@@ -131,44 +125,6 @@
       display: inline-block;
       margin-right: 10px;
       text-align: left;
-    }
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.3em;
-      }
-      .row-flex div {
-        min-width: 150px;
-      }
-      button {
-        width: 100%;
-      }
-      .signature-line {
-        margin-top: 30px;
-      }
-      .avoid-break .option-group button {
-        width: 100%;
-      }
-    }
-    @media (max-width: 480px) {
-      body {
-        margin: 10px;
-      }
-      h1 {
-        font-size: 1.2em;
-      }
-      .row-flex div {
-        min-width: 100%;
-      }
-      .signature-line {
-        margin-top: 20px;
-      }
-      canvas {
-        max-width: 100%;
-        height: auto;
-      }
-      label, input, textarea, button {
-        font-size: 1em;
-      }
     }
     @media print {
       @page {
@@ -337,7 +293,7 @@
                   </div>
                 </div>
                 <div>
-                  <label class="title-label" for="horarioJejum">Horário de Início do Jejum</label>
+                  <label class="title-label">Horário de Início do Jejum</label>
                   <input type="time" id="horarioJejum" name="horarioJejum" />
                 </div>
               </div>
@@ -350,7 +306,7 @@
                   </div>
                 </div>
                 <div>
-                  <label class="title-label" for="quaisMedicamentos">Se Sim, Quais</label>
+                  <label class="title-label">Se Sim, Quais</label>
                   <input type="text" id="quaisMedicamentos" name="quaisMedicamentos" />
                 </div>
               </div>
@@ -363,7 +319,7 @@
                   </div>
                 </div>
                 <div>
-                  <label class="title-label" for="qualDoenca">Se Sim, Qual</label>
+                  <label class="title-label">Se Sim, Qual</label>
                   <input type="text" id="qualDoenca" name="qualDoenca" />
                 </div>
               </div>
@@ -376,7 +332,7 @@
                   </div>
                 </div>
                 <div>
-                  <label class="title-label" for="qualProcCirurgico">Se Sim, Qual</label>
+                  <label class="title-label">Se Sim, Qual</label>
                   <input type="text" id="qualProcCirurgico" name="qualProcCirurgico" />
                 </div>
               </div>
@@ -410,8 +366,8 @@
                   </div>
                 </div>
               </div>
-              <div class="avoid-break" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
-                <div style="text-align: left; font-weight: bold; flex: 1 1 100%;">
+              <div class="avoid-break" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px;">
+                <div style="text-align: left; font-weight: bold;">
                   Observação Visual
                   <div class="option-group" style="margin-top:5px;">
                     <label><input type="radio" name="observacaoVisual" value="NENHUMA ALTERAÇÃO" /> NENHUMA ALTERAÇÃO</label>
@@ -422,15 +378,15 @@
                 <canvas id="animalCanvas" width="300" height="300"></canvas>
               </div>
               <div class="avoid-break" style="text-align:center; margin-top:10px;">
-                <label class="title-label" style="text-align:center;" for="descricaoClinica">Descrição Clínica da Lesão</label>
+                <label class="title-label" style="text-align:center;">Descrição Clínica da Lesão</label>
                 <textarea id="descricaoClinica" name="descricaoClinica" rows="4" style="text-align:left;"></textarea>
               </div>
               <div class="avoid-break" style="text-align:center;">
-                <label class="title-label" style="text-align:center;" for="exameHemograma">Resultado do Exame de Hemograma</label>
+                <label class="title-label" style="text-align:center;">Resultado do Exame de Hemograma</label>
                 <input type="text" id="exameHemograma" name="exameHemograma" style="text-align:left;" />
               </div>
               <div class="avoid-break" style="text-align:center;">
-                <label class="title-label" style="text-align:center;" for="observacoesVet">Observações Adicionais do Veterinário</label>
+                <label class="title-label" style="text-align:center;">Observações Adicionais do Veterinário</label>
                 <textarea id="observacoesVet" name="observacoesVet" rows="4" style="text-align:left;"></textarea>
               </div>
               <div class="signature-line">
