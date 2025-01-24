@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Ficha de Atendimento Veterinário</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.3/dist/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .header-image {
+      display: block;
+      margin: 0 auto 15px auto;
+      max-width: 600px;
+      width: 100%;
+    }
+    #printTable {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+    }
+    thead {
+      display: table-header-group;
+    }
+    th {
+      text-align: center;
+      font-size: 1.1em;
+      padding: 5px;
+      font-weight: bold;
+    }
+    #printTable tbody td {
+      vertical-align: top;
+    }
+    form {
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .title-label {
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 10px;
+      display: block;
+      text-align: center;
+    }
+    .avoid-break {
+      page-break-inside: avoid;
+      margin-bottom: 10px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 14px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    #buttonContainer {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .signature-line {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .signature-line .line {
+      font-weight: normal;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+    #animalCanvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 10px auto;
+      cursor: crosshair;
+      max-width: 100%;
+    }
+    .row-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .row-flex div {
+      flex: 1;
+      min-width: 130px;
+    }
+    .same-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .option-group {
+      text-align: left;
+      font-weight: normal;
+    }
+    .option-group label {
+      display: inline-block;
+      margin-right: 10px;
+      text-align: left;
+    }
+    @media print {
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
+      body {
+        margin: 0;
+        font-size: 12px;
+      }
+      table {
+        width: 100%;
+        border: none;
+      }
+      th, td {
+        padding: 5px;
+      }
+      .avoid-break {
+        page-break-inside: avoid;
+      }
+      canvas {
+        max-height: 200px;
+      }
+      #buttonContainer {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body onload="initializeForm()">
+  <img
+    src="https://www.unifaa.edu.br/images/2023/08/post-novo-reitor-do-unifaa-marcio-martins-da-costa-aposta-na-excelencia-academica-por-meio-da-construcao-coletiva-big-cover-64cd41e9d5274.webp"
+    alt="Cabeçalho da Instituição"
+    class="header-image"
+  />
+  <h1>Ficha de Atendimento Veterinário</h1>
+  <div id="pdfContent">
+    <table id="printTable">
+      <thead>
+        <tr>
+          <th>Protocolo de Atendimento: <span id="protocoloAtendimento"></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <form id="vetForm">
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label" for="dataAtendimento">Data do Atendimento</label>
+                  <input type="date" id="dataAtendimento" name="dataAtendimento" required />
+                </div>
+                <div>
+                  <label class="title-label" for="horaAtendimento">Hora do Atendimento</label>
+                  <input type="time" id="horaAtendimento" name="horaAtendimento" required />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label" for="responsavelAtendimento">Responsável pelo Atendimento</label>
+                  <input type="text" id="responsavelAtendimento" name="responsavelAtendimento" placeholder="NOME DO MÉDICO VETERINÁRIO"/>
+                </div>
+                <div>
+                  <label class="title-label" for="crmv">CRMV</label>
+                  <input type="text" id="crmv" name="crmv" placeholder="Ex.:123456-RJ" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label" for="nomeResponsavel">Responsável pelo Animal</label>
+                  <input type="text" id="nomeResponsavel" name="nomeResponsavel" placeholder="Ex.:JOSÉ DOS SANTOS SILVA"/>
+                </div>
+                <div>
+                  <label class="title-label" for="cpfResponsavel">CPF do Responsável</label>
+                  <input type="text" id="cpfResponsavel" name="cpfResponsavel" placeholder="Ex.: 12345678900 *SEM PONTOS E TRAÇO*" required />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label" for="nomeAnimal">Nome do Animal</label>
+                  <input type="text" id="nomeAnimal" name="nomeAnimal" placeholder="Ex.: Rex" />
+                </div>
+                <div>
+                  <label class="title-label" for="raca">Raça</label>
+                  <input type="text" id="raca" name="raca" placeholder="Ex.:SRD" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Idade</label>
+                  <input type="text" id="idadeAnos" name="idadeAnos" style="width: 70px; margin-right:5px;" placeholder="Ex.: 2" />
+                  ANOS
+                  <input type="text" id="idadeMeses" name="idadeMeses" style="width: 70px; margin-left:10px; margin-right:5px;" placeholder="Ex.: 3" />
+                  MESES
+                </div>
+                <div>
+                  <label class="title-label">Peso</label>
+                  <input type="text" id="pesoKg" name="pesoKg" style="width: 70px; margin-right:5px;" placeholder="Ex.: 10" />
+                  KG
+                  <input type="text" id="pesoG" name="pesoG" style="width: 70px; margin-left:10px; margin-right:5px;" placeholder="Ex.: 200" />
+                  G
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Espécie</label>
+                  <div class="same-line">
+                    <input type="radio" name="especie" value="CÃO" /> CÃO
+                    <input type="radio" name="especie" value="GATO" /> GATO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Sexo</label>
+                  <div class="same-line">
+                    <input type="radio" name="sexoAnimal" value="FÊMEA" /> FÊMEA
+                    <input type="radio" name="sexoAnimal" value="MACHO" /> MACHO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Comportamento</label>
+                  <div class="same-line">
+                    <input type="radio" name="comportamento" value="DÓCIL" /> DÓCIL
+                    <input type="radio" name="comportamento" value="AGRESSIVO" /> AGRESSIVO
+                  </div>
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label" for="pelagem">Pelagem</label>
+                  <input type="text" id="pelagem" name="pelagem" placeholder="Ex.:PRETA" />
+                </div>
+                <div>
+                  <label class="title-label">Diarreia</label>
+                  <div class="same-line">
+                    <input type="radio" name="diarreia" value="SIM" /> SIM
+                    <input type="radio" name="diarreia" value="NÃO" /> NÃO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Vômito</label>
+                  <div class="same-line">
+                    <input type="radio" name="vomito" value="SIM" /> SIM
+                    <input type="radio" name="vomito" value="NÃO" /> NÃO
+                  </div>
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Fez Jejum</label>
+                  <div class="same-line">
+                    <input type="radio" name="fezJejum" value="SIM" /> SIM
+                    <input type="radio" name="fezJejum" value="NÃO" /> NÃO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Horário de Início do Jejum</label>
+                  <input type="time" id="horarioJejum" name="horarioJejum" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Faz Uso de Medicamentos</label>
+                  <div class="same-line">
+                    <input type="radio" name="medicamentos" value="SIM" /> SIM
+                    <input type="radio" name="medicamentos" value="NÃO" /> NÃO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Se Sim, Quais</label>
+                  <input type="text" id="quaisMedicamentos" name="quaisMedicamentos" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Alguma Doença Já Existente</label>
+                  <div class="same-line">
+                    <input type="radio" name="doencaExistente" value="SIM" /> SIM
+                    <input type="radio" name="doencaExistente" value="NÃO" /> NÃO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Se Sim, Qual</label>
+                  <input type="text" id="qualDoenca" name="qualDoenca" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex">
+                <div>
+                  <label class="title-label">Procedimento Cirúrgico Recente</label>
+                  <div class="same-line">
+                    <input type="radio" name="procCirurgico" value="SIM" /> SIM
+                    <input type="radio" name="procCirurgico" value="NÃO" /> NÃO
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Se Sim, Qual</label>
+                  <input type="text" id="qualProcCirurgico" name="qualProcCirurgico" />
+                </div>
+              </div>
+              <div class="avoid-break row-flex" style="justify-content: center;">
+                <div>
+                  <label class="title-label">Score Físico</label>
+                  <div class="option-group">
+                    <label><input type="radio" name="scoreFisico" value="1" /> 1 - MUITO MAGRO</label>
+                    <label><input type="radio" name="scoreFisico" value="2" /> 2 - MAGRO</label>
+                    <label><input type="radio" name="scoreFisico" value="3" /> 3 - NORMAL</label>
+                    <label><input type="radio" name="scoreFisico" value="4" /> 4 - ACIMA DO PESO</label>
+                    <label><input type="radio" name="scoreFisico" value="5" /> 5 - OBESO</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Grau de Desidratação</label>
+                  <div class="option-group">
+                    <label><input type="radio" name="desidratacao" value="LEVE" /> LEVE</label>
+                    <label><input type="radio" name="desidratacao" value="MODERADO" /> MODERADO</label>
+                    <label><input type="radio" name="desidratacao" value="GRAVE" /> GRAVE</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="title-label">Mucosas</label>
+                  <div class="option-group">
+                    <label><input type="radio" name="mucosas" value="HIPOCORADAS" /> HIPOCORADAS</label>
+                    <label><input type="radio" name="mucosas" value="NORMOCORADAS" /> NORMOCORADAS</label>
+                    <label><input type="radio" name="mucosas" value="HIPEREMIADAS" /> HIPEREMIADAS</label>
+                    <label><input type="radio" name="mucosas" value="ICTÉRICAS" /> ICTÉRICAS</label>
+                    <label><input type="radio" name="mucosas" value="CIANÓTICAS" /> CIANÓTICAS</label>
+                  </div>
+                </div>
+              </div>
+              <div class="avoid-break" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px;">
+                <div style="text-align: left; font-weight: bold;">
+                  Observação Visual
+                  <div class="option-group" style="margin-top:5px;">
+                    <label><input type="radio" name="observacaoVisual" value="NENHUMA ALTERAÇÃO" /> NENHUMA ALTERAÇÃO</label>
+                    <label><input type="radio" name="observacaoVisual" value="LESÕES VISÍVEIS" /> LESÕES VISÍVEIS</label>
+                  </div>
+                </div>
+                <canvas id="animalCanvas" width="300" height="300"></canvas>
+              </div>
+              <div class="avoid-break" style="text-align:center; margin-top:10px;">
+                <label class="title-label" style="text-align:center;">Descrição Clínica da Lesão</label>
+                <textarea id="descricaoClinica" name="descricaoClinica" rows="4" style="text-align:left;"></textarea>
+              </div>
+              <div class="avoid-break" style="text-align:center;">
+                <label class="title-label" style="text-align:center;">Resultado do Exame de Hemograma</label>
+                <input type="text" id="exameHemograma" name="exameHemograma" style="text-align:left;" />
+              </div>
+              <div class="avoid-break" style="text-align:center;">
+                <label class="title-label" style="text-align:center;">Observações Adicionais do Veterinário</label>
+                <textarea id="observacoesVet" name="observacoesVet" rows="4" style="text-align:left;"></textarea>
+              </div>
+              <div class="signature-line">
+                <p class="line" id="signatureLine"></p>
+              </div>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="buttonContainer">
+    <button id="generatePdfBtn">Gerar Arquivo de Atendimento</button>
+    <button id="newFormBtn">Novo Atendimento</button>
+  </div>
+  <script>
+    const canvas = document.getElementById("animalCanvas")
+    const ctx = canvas.getContext("2d")
+    let drawing = false
+    let lastX = 0
+    let lastY = 0
+    let initialCanvasData = null
+    const animalImage = new Image()
+    animalImage.crossOrigin = "anonymous"
+    animalImage.src = "https://t3.ftcdn.net/jpg/02/29/24/12/360_F_229241214_hu6q2w9T0T330klH1okXXfUSIrQ1Nb4v.jpg"
+    animalImage.onload = function() {
+      canvas.width = 300
+      canvas.height = 300
+      ctx.drawImage(animalImage, 0, 0, canvas.width, canvas.height)
+      initialCanvasData = canvas.toDataURL()
+    }
+    function startDrawing(e) {
+      drawing = true
+      ;[lastX, lastY] = [e.offsetX, e.offsetY]
+    }
+    function stopDrawing() {
+      drawing = false
+      ctx.beginPath()
+    }
+    function draw(e) {
+      if(!drawing) return
+      ctx.lineWidth = 2
+      ctx.lineCap = "round"
+      ctx.strokeStyle = "#ff0000"
+      ctx.beginPath()
+      ctx.moveTo(lastX, lastY)
+      ctx.lineTo(e.offsetX, e.offsetY)
+      ctx.stroke()
+      ;[lastX, lastY] = [e.offsetX, e.offsetY]
+    }
+    canvas.addEventListener("mousedown", startDrawing)
+    canvas.addEventListener("mouseup", stopDrawing)
+    canvas.addEventListener("mouseout", stopDrawing)
+    canvas.addEventListener("mousemove", draw)
+    function initializeForm() {
+      const today = new Date()
+      const yyyy = today.getFullYear()
+      let mm = today.getMonth() + 1
+      let dd = today.getDate()
+      if(mm < 10) mm = "0" + mm
+      if(dd < 10) dd = "0" + dd
+      document.getElementById("dataAtendimento").value = yyyy + "-" + mm + "-" + dd
+    }
+    function validateForm() {
+      const errors = []
+      const radioNames = [
+        "fezJejum","diarreia","vomito","medicamentos","doencaExistente",
+        "procCirurgico","scoreFisico","desidratacao","observacaoVisual",
+        "especie","sexoAnimal","comportamento","mucosas"
+      ]
+      const questionLabels = {
+        fezJejum:"Fez Jejum",diarreia:"Diarreia",vomito:"Vômito",
+        medicamentos:"Faz Uso de Medicamentos",doencaExistente:"Alguma Doença Já Existente",
+        procCirurgico:"Procedimento Cirúrgico Recente",scoreFisico:"Score Físico",
+        desidratacao:"Grau de Desidratação",observacaoVisual:"Observação Visual",
+        especie:"Espécie",sexoAnimal:"Sexo do Animal",comportamento:"Comportamento",
+        mucosas:"Mucosas"
+      }
+      for (let r of radioNames) {
+        const radios = document.getElementsByName(r)
+        let isChecked = false
+        for (let i = 0; i < radios.length; i++) {
+          if (radios[i].checked) {
+            isChecked = true
+            break
+          }
+        }
+        if (!isChecked) {
+          errors.push("Selecione uma opção para \"" + questionLabels[r] + "\"")
+        }
+      }
+      const medsRadios = document.getElementsByName("medicamentos")
+      let medsAnswer = ""
+      for (let m of medsRadios) {
+        if(m.checked) {
+          medsAnswer = m.value
+          break
+        }
+      }
+      if(medsAnswer === "SIM") {
+        const quais = (document.getElementById("quaisMedicamentos").value || "").trim()
+        if(!quais) {
+          errors.push("Informe quais medicamentos estão sendo usados.")
+        }
+      }
+      const fezJejumRadios = document.getElementsByName("fezJejum")
+      let fezJejumVal = ""
+      for (let fj of fezJejumRadios) {
+        if(fj.checked) {
+          fezJejumVal = fj.value
+          break
+        }
+      }
+      if(fezJejumVal === "SIM") {
+        const hj = (document.getElementById("horarioJejum").value || "").trim()
+        if(!hj) {
+          errors.push("Informe o horário de início do jejum.")
+        }
+      }
+      const requiredTextIds = [
+        "raca","pelagem","responsavelAtendimento","crmv",
+        "nomeAnimal","nomeResponsavel","cpfResponsavel"
+      ]
+      const textLabels = {
+        raca:"Raça",pelagem:"Pelagem",responsavelAtendimento:"Responsável pelo Atendimento",
+        crmv:"CRMV",nomeAnimal:"Nome do Animal",nomeResponsavel:"Responsável pelo Animal",
+        cpfResponsavel:"CPF do Responsável"
+      }
+      for (let tid of requiredTextIds) {
+        const val = (document.getElementById(tid).value || "").trim()
+        if (!val) {
+          errors.push("O campo \"" + textLabels[tid] + "\" é obrigatório.")
+        }
+      }
+      const obsVisual = document.querySelector('input[name="observacaoVisual"]:checked')
+      if (obsVisual && obsVisual.value === "LESÕES VISÍVEIS") {
+        const descricaoLesao = (document.getElementById("descricaoClinica").value || "").trim()
+        if(!descricaoLesao) {
+          errors.push("Descreva a lesão na pergunta: Descrição Clínica da Lesão.")
+        }
+        if (canvas.toDataURL() === initialCanvasData) {
+          errors.push("Indique na figura o local da lesão visível (desenhe algo no canvas).")
+        }
+      }
+      if (errors.length > 0) {
+        alert("Ocorreram os seguintes problemas:\n- " + errors.join("\n- "))
+        return false
+      }
+      return true
+    }
+    document.getElementById("generatePdfBtn").addEventListener("click",function(){
+      const isValid = validateForm()
+      if(!isValid) return
+      const dataForm = document.getElementById("dataAtendimento").value
+      const horaForm = document.getElementById("horaAtendimento").value
+      const cpf = document.getElementById("cpfResponsavel").value.replace(/\D/g,"")
+      if(!dataForm || !horaForm || !cpf) {
+        alert("Há campos obrigatórios não preenchidos. Verifique antes de finalizar.")
+        return
+      }
+      const ano = dataForm.substring(0, 4)
+      const mesDia = dataForm.substring(5, 7) + dataForm.substring(8, 10)
+      const horaMin = horaForm.substring(0,2) + horaForm.substring(3,5)
+      const nomeArquivo = ano + "-" + mesDia + "-" + horaMin + "-" + cpf
+      document.getElementById("protocoloAtendimento").textContent = nomeArquivo
+      const responsavelAtend = document.getElementById("responsavelAtendimento").value || ""
+      const crmv = document.getElementById("crmv").value || ""
+      const signatureP = document.getElementById("signatureLine")
+      signatureP.innerHTML = "______________________________<br /><br />" + responsavelAtend + ", " + crmv
+      const confirmSave = confirm("Você conferiu os dados lançados e deseja finalizar e salvar este atendimento?")
+      if(!confirmSave) return
+      const originalTitle = document.title
+      document.title = nomeArquivo
+      window.print()
+      setTimeout(() => {
+        document.title = originalTitle
+        resetForm()
+      }, 800)
+    })
+    document.getElementById("newFormBtn").addEventListener("click",function(){
+      const confirmNew = confirm("Você deseja iniciar um novo atendimento e excluir todos os dados sem salvar?")
+      if(!confirmNew) return
+      resetForm()
+    })
+    function resetForm() {
+      document.getElementById("vetForm").reset()
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(animalImage, 0, 0, canvas.width, canvas.height)
+      initialCanvasData = canvas.toDataURL()
+      document.getElementById("protocoloAtendimento").textContent = ""
+      document.getElementById("signatureLine").innerHTML = ""
+    }
+  </script>
+</body>
+</html>
